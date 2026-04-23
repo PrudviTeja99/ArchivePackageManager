@@ -3,15 +3,12 @@
     "runtime": "org.kde.Platform",
     "runtime-version": "6.7",
     "sdk": "org.kde.Sdk",
-    "sdk-extensions": [
-        "org.freedesktop.Sdk.Extension.python312"
-    ],
+    "base": "com.riverbankcomputing.PyQt.BaseApp",
+    "base-version": "6.7",
     "command": "archive-package-manager",
     "build-options": {
         "append-path": "/usr/lib/sdk/python312/bin",
-        "env": {
-            "PYTHONPATH": "/app/lib/python3.12/site-packages"
-        }
+        "env": {}
     },
     "finish-args": [
         "--share=ipc",
@@ -22,30 +19,6 @@
     ],
     "modules": [
         {
-            "name": "python3-PyQt6",
-            "buildsystem": "simple",
-            "build-commands": [
-                "pip3 install --prefix=/app --no-deps PyQt6 PyQt6-Qt6 PyQt6-sip --find-links ."
-            ],
-            "sources": [
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/py3/P/PyQt6/PyQt6-6.7.1-cp38-abi3-manylinux_2_28_x86_64.whl",
-                    "sha256": "REPLACE_WITH_SHA256_FROM_STEP_2"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/py3/P/PyQt6_Qt6/PyQt6_Qt6-6.7.1-cp38-abi3-manylinux_2_28_x86_64.whl",
-                    "sha256": "REPLACE_WITH_SHA256_FROM_STEP_2"
-                },
-                {
-                    "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/py3/P/PyQt6_sip/PyQt6_sip-13.6.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.whl",
-                    "sha256": "REPLACE_WITH_SHA256_FROM_STEP_2"
-                }
-            ]
-        },
-        {
             "name": "archive-package-manager",
             "buildsystem": "simple",
             "build-commands": [
@@ -54,8 +27,9 @@
                 "install -Dm755 workers.py ${FLATPAK_DEST}/bin/workers.py",
                 "install -Dm644 ArchievePackageManager.ui ${FLATPAK_DEST}/bin/ArchievePackageManager.ui",
                 "install -Dm755 archive-package-manager ${FLATPAK_DEST}/bin/archive-package-manager",
-                "install -Dm644 assets/icons/app_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/io.github.prudviteja99.archivepackagemanager.png",
+                "install -Dm644 assets/icons/app_icon_resized.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/io.github.prudviteja99.archivepackagemanager.png",
                 "install -Dm644 assets/icons/appimage_icon.png ${FLATPAK_DEST}/bin/assets/icons/appimage_icon.png",
+                "install -Dm644 assets/icons/app_icon.png ${FLATPAK_DEST}/bin/assets/icons/app_icon.png",
                 "install -Dm644 assets/icons/targz_icon.png ${FLATPAK_DEST}/bin/assets/icons/targz_icon.png",
                 "install -Dm644 io.github.prudviteja99.archivepackagemanager.desktop ${FLATPAK_DEST}/share/applications/io.github.prudviteja99.archivepackagemanager.desktop",
                 "install -Dm644 io.github.prudviteja99.archivepackagemanager.metainfo.xml ${FLATPAK_DEST}/share/metainfo/io.github.prudviteja99.archivepackagemanager.metainfo.xml"

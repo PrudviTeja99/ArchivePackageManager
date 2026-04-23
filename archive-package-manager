@@ -1,5 +1,3 @@
 #!/bin/bash
-# Flatpak wrapper script for Archive Package Manager
-# Ensures the app runs from the correct directory so that all
-# relative resource paths (UI file, assets) resolve correctly.
-exec python3 /app/bin/main.py "$@"
+cd /app/bin
+exec python3 main.py "$@"
