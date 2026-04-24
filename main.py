@@ -638,15 +638,13 @@ class ArchievePackageManager(QtWidgets.QDialog):
     def create_desktop_entry(self, name, exec_path, icon_path, source_desktop_path=None):
         from pathlib import Path
         import os
-        from PyQt6 import QtCore
         import re
         
-        desktop_dir_str = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.StandardLocation.ApplicationsLocation)
-        if desktop_dir_str:
-            desktop_dir = Path(desktop_dir_str)
-        else:
-            desktop_dir = Path.home() / '.local' / 'share' / 'applications'
-            
+        # Always use the real host XDG path.
+        # QStandardPaths.ApplicationsLocation resolves to a sandboxed path
+        # inside Flatpak (~/.var/app/.../data/applications) which is never
+        # read by the system app launcher.
+        desktop_dir = Path.home() / '.local' / 'share' / 'applications'
         desktop_dir.mkdir(parents=True, exist_ok=True)
         
         # Create a safe, normalized filename for the .desktop file
@@ -698,26 +696,30 @@ Categories=Utility;Application;
                 f.write(desktop_content)
             # Make the .desktop file executable
             os.chmod(desktop_file, 0o755)
+            # Notify the desktop session so the launcher picks it up immediately
+            subprocess.run(
+                ['update-desktop-database', str(desktop_dir)],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
         except Exception as e:
             print(f"Error creating desktop entry: {e}")
 
     def delete_desktop_entry(self, name):
         from pathlib import Path
         import os
-        from PyQt6 import QtCore
         
         safe_name = "".join(c for c in name if c.isalnum() or c in (' ', '-', '_')).replace(' ', '_').lower()
-        desktop_dir_str = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.StandardLocation.ApplicationsLocation)
-        if desktop_dir_str:
-            desktop_dir = Path(desktop_dir_str)
-        else:
-            desktop_dir = Path.home() / '.local' / 'share' / 'applications'
-            
+        # Always use the real host XDG path (same reason as create_desktop_entry)
+        desktop_dir = Path.home() / '.local' / 'share' / 'applications'
         desktop_file = desktop_dir / f"apm_{safe_name}.desktop"
         
         try:
             if desktop_file.exists():
                 os.remove(desktop_file)
+                subprocess.run(
+                    ['update-desktop-database', str(desktop_dir)],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
         except OSError:
             pass
 
