@@ -99,12 +99,12 @@ class LibraryItemWidget(QtWidgets.QWidget):
 
 
 
-class ArchievePackageManager(QtWidgets.QDialog):
+class ArchivePackageManager(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
         # Load the UI file
         _base_dir = os.path.dirname(os.path.abspath(__file__))
-        uic.loadUi(os.path.join(_base_dir, 'ArchievePackageManager.ui'), self)
+        uic.loadUi(os.path.join(_base_dir, 'ArchivePackageManager.ui'), self)
         
         # Initialize the database table if it doesn't exist
         init_db()
@@ -715,6 +715,6 @@ if __name__ == '__main__':
     app.setApplicationName("ArchivePackageManager")
     # Required for Wayland taskbars to match the window to the .desktop entry
     app.setDesktopFileName("io.github.prudviteja99.archivepackagemanager")
-    window = ArchievePackageManager()
+    window = ArchivePackageManager()
     window.show()
     sys.exit(app.exec())

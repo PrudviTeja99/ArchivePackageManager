@@ -26,7 +26,7 @@
                 "install -Dm755 main.py ${FLATPAK_DEST}/bin/main.py",
                 "install -Dm755 database.py ${FLATPAK_DEST}/bin/database.py",
                 "install -Dm755 workers.py ${FLATPAK_DEST}/bin/workers.py",
-                "install -Dm644 ArchievePackageManager.ui ${FLATPAK_DEST}/bin/ArchievePackageManager.ui",
+                "install -Dm644 ArchivePackageManager.ui ${FLATPAK_DEST}/bin/ArchivePackageManager.ui",
                 "install -Dm755 archive-package-manager ${FLATPAK_DEST}/bin/archive-package-manager",
                 "install -Dm644 assets/icons/app_icon_resized.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/io.github.prudviteja99.archivepackagemanager.png",
                 "install -Dm644 assets/icons/appimage_icon.png ${FLATPAK_DEST}/bin/assets/icons/appimage_icon.png",
