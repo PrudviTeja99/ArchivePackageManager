@@ -1,0 +1,36 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  flatpak-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install required build tools
+        run: |
+          sudo apt update
+          sudo apt install -y flatpak-builder flatpak
+
+      - name: Add Flathub repo
+        run: |
+          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Install Flatpak runtimes
+        run: |
+          flatpak install -y flathub org.kde.Platform//6.7
+          flatpak install -y flathub org.kde.Sdk//6.7
+          flatpak install -y flathub com.riverbankcomputing.PyQt.BaseApp//6.7
+
+      - name: Clean, Build flatpak
+        run: |
+          flatpak-builder --force-clean --repo=repo build-dir io.github.prudviteja99.archivepackagemanager.json
+
+      - name: Create flatpak app
+        run: |
+          flatpak build-bundle repo archivepackagemanager-${{ github.ref_name }}.flatpak io.github.prudviteja99.archivepackagemanager
+      
+    
