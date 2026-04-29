@@ -348,21 +348,43 @@ class ArchivePackageManager(QtWidgets.QDialog):
 
     def toggle_default_icon(self, checked):
         if checked:
+            import shutil
+            from pathlib import Path
+            
             # Determine which default icon to show
             base_dir = os.path.dirname(os.path.abspath(__file__))
+            assets_dir = os.path.join(base_dir, "assets")
+            if not os.path.exists(assets_dir):
+                assets_dir = os.path.join(base_dir, "..", "assets")
+                
             if self.original_archive_path and self.original_archive_path.lower().endswith('.appimage'):
-                icon_path = os.path.join(base_dir, "assets", "icons", "appimage_icon.png")
+                icon_name = "appimage_icon.png"
             elif self.original_archive_path and self.original_archive_path.lower().endswith('.tar.gz'):
-                icon_path = os.path.join(base_dir, "assets", "icons", "targz_icon.png")
+                icon_name = "targz_icon.png"
             else:
-                icon_path = os.path.join(base_dir, "assets", "icons", "app_icon.png")
+                icon_name = "app_icon.png"
                 
-            if not os.path.exists(icon_path):
-                icon_path = os.path.join(base_dir, "assets", "icons", "app_icon.png")
+            source_icon_path = os.path.join(assets_dir, "icons", icon_name)
+            if not os.path.exists(source_icon_path):
+                source_icon_path = os.path.join(assets_dir, "icons", "app_icon.png")
+                icon_name = "app_icon.png"
                 
-            self.current_icon_path = icon_path
-            if os.path.exists(icon_path):
-                pixmap = QtGui.QPixmap(icon_path)
+            # Define host target path so the host OS launcher can see the icon
+            host_icons_dir = Path.home() / ".local" / "share" / "icons"
+            host_icons_dir.mkdir(parents=True, exist_ok=True)
+            
+            target_icon_path = host_icons_dir / f"apm_{icon_name}"
+            
+            if not target_icon_path.exists() and os.path.exists(source_icon_path):
+                try:
+                    shutil.copy2(source_icon_path, target_icon_path)
+                except Exception as e:
+                    print(f"Failed to copy default icon to host: {e}")
+                    target_icon_path = Path(source_icon_path) # Fallback if copy fails
+            
+            self.current_icon_path = str(target_icon_path)
+            if os.path.exists(self.current_icon_path):
+                pixmap = QtGui.QPixmap(self.current_icon_path)
                 self.iconLabel.setPixmap(pixmap)
             else:
                 self.iconLabel.clear()
