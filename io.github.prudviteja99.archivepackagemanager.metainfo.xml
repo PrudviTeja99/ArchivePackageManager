@@ -16,7 +16,7 @@
   <launchable type="desktop-id">io.github.prudviteja99.archivepackagemanager.desktop</launchable>
   <url type="homepage">https://github.com/PrudviTeja99/ArchievePackageManger</url>
   <releases>
-    <release version="1.0.0" date="2026-04-23"/>
+    <release version="1.0.2" date="2026-04-29"/>
   </releases>
   <content_rating type="oars-1.1"/>
 </component>
